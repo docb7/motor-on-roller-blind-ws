@@ -7,6 +7,7 @@
       //webSocket.broadcastTXT("{ \"set\":"+String(set)+", \"position\":"+String(pos)+" }");
       webSocket.broadcastTXT(sendtext_buf);
 */
+//BE AWARE - I changed the Output Pins for the Stepper from D1-D4 to D5-D8 - see line 64 and 232 - 235
 
 
 #include <Stepper_28BYJ_48.h>
@@ -228,10 +229,10 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
   is not moving
 */
 void stopPowerToCoils() {
-  digitalWrite(D1, LOW);
-  digitalWrite(D2, LOW);
-  digitalWrite(D3, LOW);
-  digitalWrite(D4, LOW);
+  digitalWrite(D5, LOW);
+  digitalWrite(D6, LOW);
+  digitalWrite(D7, LOW);
+  digitalWrite(D8, LOW);
 }
 
 /*
