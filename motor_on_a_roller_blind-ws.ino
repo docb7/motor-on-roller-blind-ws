@@ -1,3 +1,11 @@
+// ArduinoJson Library must be changed back to V5.13.2
+//Additionally I changed websockets as follows, cause the original version caused errors
+     String sendtext = "set:" + String(set) + "position" + String(pos); // ok
+      uint8_t sendtext_buf[sendtext.length()];
+      sendtext.getBytes(sendtext_buf, sendtext.length());
+      //webSocket.broadcastTXT("{ \"set\":"+String(set)+", \"position\":"+String(pos)+" }");
+      webSocket.broadcastTXT(sendtext_buf);
+
 #include <Stepper_28BYJ_48.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
@@ -50,7 +58,7 @@ bool shouldSaveConfig = false;      //Used for WIFI Manager callback to save par
 boolean initLoop = true;            //To enable actions first time the loop is run
 boolean ccw = true;                 //Turns counter clockwise to lower the curtain
 
-Stepper_28BYJ_48 small_stepper(D1, D3, D2, D4); //Initiate stepper driver
+Stepper_28BYJ_48 small_stepper(D5, D6, D7, D8); //Initiate stepper driver
 
 ESP8266WebServer server(80);              // TCP server at port 80 will respond to HTTP requests
 WebSocketsServer webSocket = WebSocketsServer(81);  // WebSockets will respond on port 81
@@ -158,8 +166,12 @@ void processMsg(String res, uint8_t clientnum){
     //Send position details to client
     int set = (setPos * 100)/maxPosition;
     int pos = (currentPosition * 100)/maxPosition;
+    String sendtext = "set:" + String(set) + "position" + String(pos); // ok
+    uint8_t sendtext_buf[sendtext.length()];
+    sendtext.getBytes(sendtext_buf, sendtext.length());
     sendmsg(outputTopic, "{ \"set\":"+String(set)+", \"position\":"+String(pos)+" }");
-    webSocket.sendTXT(clientnum, "{ \"set\":"+String(set)+", \"position\":"+String(pos)+" }");
+    webSocket.broadcastTXT(sendtext_buf);
+   // webSocket.sendTXT(clientnum, "{ \"set\":"+String(set)+", \"position\":"+String(pos)+" }");
   } else if (res == "(ping)") {
     //Do nothing
   } else {
@@ -177,7 +189,11 @@ void processMsg(String res, uint8_t clientnum){
 
     //Send the instruction to all connected devices
     sendmsg(outputTopic, "{ \"set\":"+String(set)+", \"position\":"+String(pos)+" }");
-    webSocket.broadcastTXT("{ \"set\":"+String(set)+", \"position\":"+String(pos)+" }");
+    String sendtext = "set:" + String(set) + "position" + String(pos); // ok
+    uint8_t sendtext_buf[sendtext.length()];
+    sendtext.getBytes(sendtext_buf, sendtext.length());
+    webSocket.broadcastTXT(sendtext_buf);
+   // webSocket.broadcastTXT("{ \"set\":"+String(set)+", \"position\":"+String(pos)+" }");
   }
 }
 
@@ -452,7 +468,11 @@ void loop(void)
       action = "";
       int set = (setPos * 100)/maxPosition;
       int pos = (currentPosition * 100)/maxPosition;
-      webSocket.broadcastTXT("{ \"set\":"+String(set)+", \"position\":"+String(pos)+" }");
+      String sendtext = "set:" + String(set) + "position" + String(pos); // ok
+      uint8_t sendtext_buf[sendtext.length()];
+      sendtext.getBytes(sendtext_buf, sendtext.length());
+      //webSocket.broadcastTXT("{ \"set\":"+String(set)+", \"position\":"+String(pos)+" }");
+      webSocket.broadcastTXT(sendtext_buf);
       sendmsg(outputTopic, "{ \"set\":"+String(set)+", \"position\":"+String(pos)+" }");
       Serial.println("Stopped. Reached wanted position");
       saveItNow = true;
