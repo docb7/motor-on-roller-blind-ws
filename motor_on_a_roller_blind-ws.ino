@@ -1,10 +1,13 @@
 // ArduinoJson Library must be changed back to V5.13.2
 //Additionally I changed websockets as follows, cause the original version caused errors
-     String sendtext = "set:" + String(set) + "position" + String(pos); // ok
+/*
+      String sendtext = "\"set\":" + String(set) + "\"position\":" + String(pos);
       uint8_t sendtext_buf[sendtext.length()];
       sendtext.getBytes(sendtext_buf, sendtext.length());
       //webSocket.broadcastTXT("{ \"set\":"+String(set)+", \"position\":"+String(pos)+" }");
       webSocket.broadcastTXT(sendtext_buf);
+*/
+
 
 #include <Stepper_28BYJ_48.h>
 #include <ESP8266WiFi.h>
@@ -166,7 +169,7 @@ void processMsg(String res, uint8_t clientnum){
     //Send position details to client
     int set = (setPos * 100)/maxPosition;
     int pos = (currentPosition * 100)/maxPosition;
-    String sendtext = "set:" + String(set) + "position" + String(pos); // ok
+    String sendtext = "\"set\":" + String(set) + "\"position\":" + String(pos); // ok
     uint8_t sendtext_buf[sendtext.length()];
     sendtext.getBytes(sendtext_buf, sendtext.length());
     sendmsg(outputTopic, "{ \"set\":"+String(set)+", \"position\":"+String(pos)+" }");
@@ -189,7 +192,7 @@ void processMsg(String res, uint8_t clientnum){
 
     //Send the instruction to all connected devices
     sendmsg(outputTopic, "{ \"set\":"+String(set)+", \"position\":"+String(pos)+" }");
-    String sendtext = "set:" + String(set) + "position" + String(pos); // ok
+    String sendtext = "\"set\":" + String(set) + "\"position\":" + String(pos); // ok
     uint8_t sendtext_buf[sendtext.length()];
     sendtext.getBytes(sendtext_buf, sendtext.length());
     webSocket.broadcastTXT(sendtext_buf);
@@ -468,7 +471,7 @@ void loop(void)
       action = "";
       int set = (setPos * 100)/maxPosition;
       int pos = (currentPosition * 100)/maxPosition;
-      String sendtext = "set:" + String(set) + "position" + String(pos); // ok
+      String sendtext = "\"set\":" + String(set) + "\"position\":" + String(pos); // ok
       uint8_t sendtext_buf[sendtext.length()];
       sendtext.getBytes(sendtext_buf, sendtext.length());
       //webSocket.broadcastTXT("{ \"set\":"+String(set)+", \"position\":"+String(pos)+" }");
